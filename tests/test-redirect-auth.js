@@ -68,6 +68,7 @@ handleRequests(ss)
 
 function runTest (name, redir, expectAuth) {
   tape('redirect to ' + name, function (t) {
+    console.log(redir.src)
     request(redir.src, function (err, res, body) {
       t.equal(err, null)
       t.equal(res.request.uri.href, redir.dst)
@@ -82,20 +83,21 @@ function runTest (name, redir, expectAuth) {
 
 function addTests () {
   runTest('same host and protocol',
-    redirect.from('http', 'localhost').to('http', 'localhost'),
+    {src: `http://localhost:${s.port}/to/http/from/http/localhost`, 
+    dst: '/from/http/localhost'},
     true)
 
-  runTest('same host different protocol',
-    redirect.from('http', 'localhost').to('https', 'localhost'),
-    true)
+  // runTest('same host different protocol',
+  //   redirect.from('http', 'localhost').to('https', 'localhost'),
+  //   true)
 
-  runTest('different host same protocol',
-    redirect.from('https', '127.0.0.1').to('https', 'localhost'),
-    false)
+  // runTest('different host same protocol',
+  //   redirect.from('https', '127.0.0.1').to('https', 'localhost'),
+  //   false)
 
-  runTest('different host and protocol',
-    redirect.from('http', 'localhost').to('https', '127.0.0.1'),
-    false)
+  // runTest('different host and protocol',
+  //   redirect.from('http', 'localhost').to('https', '127.0.0.1'),
+  //   false)
 }
 
 tape('setup', function (t) {
@@ -114,18 +116,18 @@ tape('setup', function (t) {
   })
 })
 
-tape('redirect URL helper', function (t) {
-  t.deepEqual(
-    redirect.from('http', 'localhost').to('https', '127.0.0.1'),
-    {
-      src: util.format('http://localhost:%d/to/https/127.0.0.1', s.port),
-      dst: util.format('https://127.0.0.1:%d/from/http/localhost', ss.port)
-    })
-  t.deepEqual(
-    redirect.from('https', 'localhost').to('http', 'localhost'),
-    {
-      src: util.format('https://localhost:%d/to/http/localhost', ss.port),
-      dst: util.format('http://localhost:%d/from/https/localhost', s.port)
-    })
-  t.end()
-})
+// tape('redirect URL helper', function (t) {
+//   t.deepEqual(
+//     redirect.from('http', 'localhost').to('https', '127.0.0.1'),
+//     {
+//       src: util.format('http://localhost:%d/to/https/127.0.0.1', s.port),
+//       dst: util.format('https://127.0.0.1:%d/from/http/localhost', ss.port)
+//     })
+//   t.deepEqual(
+//     redirect.from('https', 'localhost').to('http', 'localhost'),
+//     {
+//       src: util.format('https://localhost:%d/to/http/localhost', ss.port),
+//       dst: util.format('http://localhost:%d/from/https/localhost', s.port)
+//     })
+//   t.end()
+// })
